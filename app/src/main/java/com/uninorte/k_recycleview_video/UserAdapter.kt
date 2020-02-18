@@ -39,6 +39,7 @@ class UserAdapter(private val mValues: List<User>,
         //holder.mView.setOnClickListener{
         //    mListener?.onListItemInteraction(item)
         //}
+        //
     }
 
     public fun updateData(){
