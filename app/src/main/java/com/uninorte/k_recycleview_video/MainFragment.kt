@@ -2,7 +2,6 @@ package com.uninorte.k_recycleview_video
 
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +13,10 @@ import kotlinx.android.synthetic.main.fragment_main.view.*
 /**
  * A simple [Fragment] subclass.
  */
-class MainFragment : Fragment(), MyUserRecyclerViewAdapter.onListInteraction {
+class MainFragment : Fragment(), UserAdapter.onListInteraction {
 
     val users = mutableListOf<User>()
-    private var adapter: MyUserRecyclerViewAdapter? ? = null
+    private var adapter: UserAdapter? ? = null
     var count: Int = 0
 
     override fun onCreateView(
@@ -49,7 +48,7 @@ class MainFragment : Fragment(), MyUserRecyclerViewAdapter.onListInteraction {
         users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357"))
 
 
-        adapter = MyUserRecyclerViewAdapter(users, this)
+        adapter = UserAdapter(users, this)
 
         view.list.layoutManager = LinearLayoutManager(context)
         view.list.adapter = adapter
