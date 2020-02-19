@@ -1,14 +1,11 @@
 package com.uninorte.k_recycleview_video
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.uninorte.k_recycleview_video.data.User
 import com.uninorte.k_recycleview_video.databinding.RowBinding
-import kotlinx.android.synthetic.main.row.view.*
 
 class UserAdapter(private val mValues: List<User>,
                   private val mListener: onListInteraction)
@@ -32,9 +29,9 @@ class UserAdapter(private val mValues: List<User>,
         holder.mView.user = item
         holder.mView.executePendingBindings()
 
-        // holder.mView.theLayout.setOnClickListener{
-        //    mListener?.onListButtonInteraction(item)
-        //}
+         holder.mView.theLayout.setOnClickListener{
+            mListener?.onListCardInteraction(item)
+        }
 
         //holder.mView.setOnClickListener{
         //    mListener?.onListItemInteraction(item)
@@ -52,7 +49,7 @@ class UserAdapter(private val mValues: List<User>,
 
     public interface onListInteraction{
         fun onListItemInteraction(item: User?)
-        fun onListButtonInteraction(item: User?)
+        fun onListCardInteraction(item: User?)
     }
 
 }
