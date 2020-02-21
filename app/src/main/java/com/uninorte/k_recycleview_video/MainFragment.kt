@@ -11,8 +11,14 @@ import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.uninorte.k_recycleview_video.data.User
 import kotlinx.android.synthetic.main.fragment_main.view.*
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * A simple [Fragment] subclass.
@@ -36,28 +42,7 @@ class MainFragment : Fragment(), UserAdapter.onListInteraction {
         // Inflate the layout for this fragment
         val view =  inflater.inflate(R.layout.fragment_main, container, false)
 
-        users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Miss","Jackie","Brown","jackie.brown@example.com","(306)-986-6207","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Mr","Andrew","Banks","andrew.banks@example.com","(413)-841-9132","https://randomuser.me/api/portraits/men/70.jpg"))
-        users.add(User("Miss","Maxine","Davis","maxine.davis@example.com","(688)-210-1102","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Mr","Andy","James","andy.james@example.com","(975)-949-2306","https://randomuser.me/api/portraits/men/70.jpg"))
-        users.add(User("Miss","Joan","Neal","joan.neal@example.com","(687)-164-3498","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Mr","Tony","Castro","tony.castro@example.com","(910)-821-7461","https://randomuser.me/api/portraits/men/70.jpg"))
-        users.add(User("Miss","Ella","Kelly","ella.kelly@example.com","(480)-375-6719","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Miss","Maureen","Graves","maureen.graves@example.com","(416)-008-3131","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Mr","Johnni","Edwards","johnni.edwards@example.com","(609)-729-5743","https://randomuser.me/api/portraits/men/70.jpg"))
-        users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357","https://randomuser.me/api/portraits/women/31.jpg"))
-        users.add(User("Miss","Shelly","Ferguson","shelly.ferguson@example.com","(908)-530-2357","https://randomuser.me/api/portraits/women/31.jpg"))
-
-
+        loadData()
 
         adapter = UserAdapter(users, this)
 
@@ -65,6 +50,39 @@ class MainFragment : Fragment(), UserAdapter.onListInteraction {
         view.list.adapter = adapter
 
         return view
+    }
+
+    private fun loadData(){
+        val queue = Volley.newRequestQueue(activity)
+        val url = "https://randomuser.me/api/?results=20"
+
+        // Request a string response from the provided URL.
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            Response.Listener<String> { response ->
+                var strResp = response.toString()
+                val jsonObj = JSONObject(strResp)
+                val jsonArray: JSONArray = jsonObj.getJSONArray("results")
+                for (i in 0 until jsonArray.length()) {
+                    var jsonInner: JSONObject = jsonArray.getJSONObject(i)
+                    var name: JSONObject = jsonInner.get("name") as JSONObject
+                    var picture: JSONObject = jsonInner.get("picture") as JSONObject
+
+                    var user = User(
+                        name.get("title") as String, name.get("first") as String, name.get("last") as String,
+                        jsonInner.get("email") as String,
+                        jsonInner.get("phone") as String,
+                        picture.get("large") as String
+                    )
+                    users.add(user)
+                }
+                adapter!!.updateData()
+            },
+            Response.ErrorListener {
+            })
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest)
     }
 
     override fun onListItemInteraction(item: User?) {

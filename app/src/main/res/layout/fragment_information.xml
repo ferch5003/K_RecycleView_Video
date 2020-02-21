@@ -17,7 +17,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="108dp"
+            android:layout_marginTop="60dp"
             android:text="@{user.first}"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -43,18 +43,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.35" />
+            app:layout_constraintGuide_percent="0.25" />
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="269dp"
-            android:layout_height="271dp"
-            android:layout_marginTop="44dp"
+            android:layout_width="370dp"
+            android:layout_height="461dp"
+            android:layout_marginEnd="8dp"
+            app:imageResource="@{user.img}"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.609"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline2"
-            tools:src="@tools:sample/avatars[0]"
-            app:imageResource="@{user.img}"/>
+            tools:src="@tools:sample/avatars[0]" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 
