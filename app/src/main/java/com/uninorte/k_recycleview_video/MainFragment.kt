@@ -20,6 +20,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.uninorte.k_recycleview_video.data.RandomUser
 import com.uninorte.k_recycleview_video.data.User
+import kotlinx.android.synthetic.main.fragment_main.*
 import kotlinx.android.synthetic.main.fragment_main.view.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -49,11 +50,33 @@ class MainFragment : Fragment(), UserAdapter.onListInteraction {
 
         viewModel = ViewModelProvider(this).get(RandomUserViewModel::class.java)
 
-        viewModel.addUsers()
+        viewModel.getUsers().observe(viewLifecycleOwner, Observer { obsUsers ->
+            run{
+                var lastUser = obsUsers.last()
+
+                var user = User(
+                    lastUser.name.title, lastUser.name.first, lastUser.name.last,
+                    lastUser.email,
+                    lastUser.phone,
+                    lastUser.picture.large
+                )
+                if(!users.contains(user)){
+                    users.add(user)
+                }
+                adapter!!.updateData()
+            }
+        })
 
         adapter = UserAdapter(users, this)
 
-        loadData()
+
+        view.btnMale.setOnClickListener{
+            viewModel.addUser("male")
+        }
+
+        view.btnFemale.setOnClickListener{
+            viewModel.addUser("female")
+        }
 
         view.list.layoutManager = LinearLayoutManager(context)
         view.list.adapter = adapter
@@ -61,33 +84,17 @@ class MainFragment : Fragment(), UserAdapter.onListInteraction {
         return view
     }
 
-    private fun loadData(){
-        viewModel.getUsers().observe(viewLifecycleOwner, Observer { obsUsers ->
-            run {
-                userList = obsUsers as MutableList<RandomUser>
+    override fun onDestroy() {
+        super.onDestroy()
 
-                for (randUser in userList) {
-
-                    var user = User(
-                        randUser.name.title, randUser.name.first, randUser.name.last,
-                        randUser.email,
-                        randUser.phone,
-                        randUser.picture.large
-                    )
-                    users.add(user)
-                }
-                adapter!!.updateData()
-            }
-        })
     }
 
     override fun onListItemInteraction(item: User?) {
+
     }
 
     override fun onListCardInteraction(item: User?) {
         val bundle = bundleOf("data" to item, "user" to item)
         navController.navigate(R.id.informationFragment,bundle)
     }
-
-
 }

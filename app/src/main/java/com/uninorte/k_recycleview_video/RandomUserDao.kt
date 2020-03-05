@@ -14,11 +14,7 @@ class RandomUserDao private constructor(var context: Context) {
 
     private val users = MutableLiveData<List<RandomUser>>()
     private val userList = mutableListOf<RandomUser>()
-    private var queue: RequestQueue
-
-    init{
-        queue = VolleySingleton.getInstance(context).requestQueue
-    }
+    private var queue: RequestQueue = VolleySingleton.getInstance(context).requestQueue
 
     companion object{
         @Volatile
@@ -31,6 +27,10 @@ class RandomUserDao private constructor(var context: Context) {
 
     fun addUsers() {
         VolleySingleton.getInstance(context).addToRequestQueue(getJsonObject())
+    }
+
+    fun addUser(gender: String?) {
+        VolleySingleton.getInstance(context).addToRequestQueue(getJsonObject(gender))
     }
 
     fun getUsers() = users
@@ -50,9 +50,23 @@ class RandomUserDao private constructor(var context: Context) {
         )
     }
 
+    private fun getJsonObject(gender: String?): JsonObjectRequest{
+        val url = "https://randomuser.me/api/?gender=$gender"
+
+        return JsonObjectRequest(
+            Request.Method.GET, url, null,
+            Response.Listener { response ->
+                //parseObject(response)
+                parseObjectG(response)
+            },
+            Response.ErrorListener { error->
+                Log.d("WebRequestTest", "That didn't work ${error.message}")
+            }
+        )
+    }
+
     private fun parseObjectG(response: JSONObject) {
         var list = RandomUser.getUser(response)
-        val i: Int = 0
         val size: Int = list.size
         for (i in 0 until size) {
             val user = list[i]

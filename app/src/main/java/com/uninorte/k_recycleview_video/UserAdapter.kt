@@ -16,7 +16,6 @@ class UserAdapter(private val mValues: List<User>,
     ): UserAdapter.ViewHolder {
         // val view = LayoutInflater.from(parent.context).inflate(R.layout.row, parent,false)
         // return ViewHolder(view)
-
         var binder: RowBinding
         binder = DataBindingUtil.inflate(LayoutInflater.from(parent.context), R.layout.row, parent, false)
         return ViewHolder(binder)
@@ -29,17 +28,12 @@ class UserAdapter(private val mValues: List<User>,
         holder.mView.user = item
         holder.mView.executePendingBindings()
 
-         holder.mView.theLayout.setOnClickListener{
+        holder.mView.theLayout.setOnClickListener{
             mListener?.onListCardInteraction(item)
         }
-
-        //holder.mView.setOnClickListener{
-        //    mListener?.onListItemInteraction(item)
-        //}
-        //
     }
 
-    public fun updateData(){
+    fun updateData(){
         notifyDataSetChanged()
     }
 
@@ -47,7 +41,7 @@ class UserAdapter(private val mValues: List<User>,
 
     }
 
-    public interface onListInteraction{
+    interface onListInteraction{
         fun onListItemInteraction(item: User?)
         fun onListCardInteraction(item: User?)
     }
