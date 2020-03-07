@@ -52,18 +52,7 @@ class MainFragment : Fragment(), UserAdapter.onListInteraction {
 
         viewModel.getUsers().observe(viewLifecycleOwner, Observer { obsUsers ->
             run{
-                var lastUser = obsUsers.last()
-
-                var user = User(
-                    lastUser.name.title, lastUser.name.first, lastUser.name.last,
-                    lastUser.email,
-                    lastUser.phone,
-                    lastUser.picture.large
-                )
-                if(!users.contains(user)){
-                    users.add(user)
-                }
-                adapter!!.updateData()
+                loadData(obsUsers)
             }
         })
 
@@ -83,10 +72,29 @@ class MainFragment : Fragment(), UserAdapter.onListInteraction {
 
         return view
     }
+    
+    private fun loadData(obsUsers: List<RandomUser>){
 
-    override fun onDestroy() {
-        super.onDestroy()
+        if(users.isEmpty()){
+            userList = obsUsers as MutableList<RandomUser>
+        }else{
+            userList.add(obsUsers.last())
+        }
 
+        for(randUser in userList){
+
+            var user = User(
+                randUser.name.title, randUser.name.first, randUser.name.last,
+                randUser.email,
+                randUser.phone,
+                randUser.picture.large
+            )
+
+            if(!users.contains(user)){
+                users.add(user)
+            }
+        }
+        adapter!!.updateData()
     }
 
     override fun onListItemInteraction(item: User?) {
